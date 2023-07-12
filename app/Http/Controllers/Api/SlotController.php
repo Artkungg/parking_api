@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Slot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SlotController extends Controller
 {
@@ -21,6 +22,14 @@ class SlotController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make(request()->all(), [
+            'parking_id' => 'required',
+            'floor' => 'required',
+            'num' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
         for($x = 1; $x <= $request->input('num'); $x++){
             $slot = new Slot;
             $slot->parking_id = $request->input('parking_id');

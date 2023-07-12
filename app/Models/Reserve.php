@@ -9,5 +9,5 @@ class Reserve extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['price'];
+    protected $fillable = ['slot_id', 'check_in', 'check_out', 'price'];
 }

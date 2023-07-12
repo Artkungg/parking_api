@@ -59,12 +59,16 @@ class ReserveController extends Controller
         $slot->is_use = true;
         $slot->save();
 
-        $reserve = new Reserve;
-        $reserve->slot_id = $slot->id;
-        $reserve->check_in = Carbon::now();
-        $reserve->save();
+        $reserve = Reserve::create([
+            'slot_id' => $slot->id,
+            'check_in' => Carbon::now()
+        ]);
 
-        return response()->json(['data' => $slot]);
+        $parking = Parking::with('reserves')->findOrFail($id);
+        $slot = $parking->reserves()->where('reserves.id', $reserve->id)->get();
+        $res['parking'] = Parking::findOrFail($id);
+        $res['parking']['slot'] = $slot;
+        return response()->json(['data' => $res]);
     }
 
     public function check_out(string $id){
@@ -93,7 +97,7 @@ class ReserveController extends Controller
                 'check_in' => $reserve->check_in,
                 'check_out' => $reserve->check_out,
                 'fee' => $parking->fee,
-                'price' => ceil($minute/60) * $parking->fee
+                'price' => $reserve->price
             ]
         ]);
     }

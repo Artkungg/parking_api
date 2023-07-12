@@ -18,4 +18,6 @@ class Slot extends Model
     public function reserves(): HasMany {
         return $this->hasMany(Reserve::class);
     }
+
+    protected $fillable = ['parking_id', 'floor', 'num'];
 }
